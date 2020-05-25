@@ -12,6 +12,7 @@ class PDFUtils {
         fun xelatexToPDF(texFile: TemporaryFile, pdfFile: TemporaryFile) {
             val XETEX_COMMAND = "xelatex -interaction=nonstopmode" + SPACE +
                     "-output-directory=" + pdfFile.parentFile.absolutePath + SPACE +
+                    "-jobname=" + pdfFile.nameWithoutExtension + SPACE + // XeLaTeX adds .pdf
                     texFile.absolutePath // same for all OS
 
             val pb = ProcessBuilder()
