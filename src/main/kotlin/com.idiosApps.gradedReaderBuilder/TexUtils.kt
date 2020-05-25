@@ -8,11 +8,10 @@ class TexUtils {
 
     companion object {
         fun putTexLineNumbers(
+            texFile: File,
             pagesInfo: MutableList<PageInfo>
         ) {
-            val outputStoryFilename = Filenames.outputTexFilename
-            val inputFile = File(outputStoryFilename) // get file ready
-            val scanner = Scanner(inputFile, "UTF-8")
+            val scanner = Scanner(texFile, "UTF-8")
             var pdfPageLastSentenceIndexer = 0
             var lineCount = 0
 

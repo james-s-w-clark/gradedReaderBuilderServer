@@ -1,5 +1,6 @@
 package com.idiosApps.gradedReaderBuilder;
 
+import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -10,13 +11,12 @@ class TeXStyling {
         val SUPERSCRIPT_STYLING = "superscript"
         val UNDERLINE_STYLING = "underline"
 
-        fun addStyling(vocab: MutableList<Vocab>,
+        fun addStyling(texFile: File,
+                       vocab: MutableList<Vocab>,
                        markupType: String) {
             // prepare to replace content in outputStoryFile
-            val outputStoryFilename = Filenames.outputTexFilename
-            val path = Paths.get(outputStoryFilename)
             val charset = StandardCharsets.UTF_8
-            var content = String(Files.readAllBytes(path), charset)
+            var content = String(Files.readAllBytes(texFile.toPath()), charset)
             val underline = "\\uline{"
             val superscript = "\\textsuperscript"
 
@@ -28,7 +28,7 @@ class TeXStyling {
                         "${vocabItem.L2Word}$superscript{${vocabItem.firstOccurencePage!! - 1}.${index + 1}}")
                 }
             }
-            Files.write(path, content.toByteArray(charset))
+            Files.write(texFile.toPath(), content.toByteArray(charset))
         }
     }
 }

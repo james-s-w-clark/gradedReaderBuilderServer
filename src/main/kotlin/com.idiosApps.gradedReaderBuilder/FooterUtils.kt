@@ -1,7 +1,9 @@
 package com.idiosApps.gradedReaderBuilder;
 
+import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 
 class FooterUtils {
@@ -9,18 +11,19 @@ class FooterUtils {
         lateinit var pageInfo: PageInfo
         private var pageFooter = ArrayList<Footers>()
 
-        fun addVocabFooters(
-            pagesInfo: MutableList<PageInfo>,
-            vocab: MutableList<Vocab>,
-            languageUsed: String
+        fun addVocabFooters (
+                texFile: File,
+                pdfFile: File,
+                pagesInfo: MutableList<PageInfo>,
+                vocab: MutableList<Vocab>,
+                languageUsed: String
         ) {
             VocabUtils.getOrderIndicies(vocab) // add vocab "order of appearance" index // todo auto-find correct order
 
             var languageMarker = LanguageUtils.getMarker(languageUsed)
-            val texPath = Paths.get(Filenames.outputTexFilename)
-            val lines = Files.readAllLines(texPath, StandardCharsets.UTF_8)
+            val lines = Files.readAllLines(texFile.toPath(), StandardCharsets.UTF_8)
 
-            for (pageNumber in 0 until PDFUtils.getNumberOfPDFPages() - 2) {// -1 for title page, -1 for size
+            for (pageNumber in 0 until PDFUtils.getNumberOfPDFPages(pdfFile) - 2) {// -1 for title page, -1 for size
                 pageInfo = pagesInfo[pageNumber]
                 pageFooter.add(generatePageFooters(languageMarker, vocab, pageNumber))
 
@@ -38,8 +41,8 @@ class FooterUtils {
 
                 lines[pageInfo.texLinesOfPDFPagesLastSentence!!] = lineWithReference
             }
-            Files.write(texPath, lines, StandardCharsets.UTF_8)
-            addFooterSections(Filenames.outputTexFilename)
+            Files.write(texFile.toPath(), lines, StandardCharsets.UTF_8)
+            addFooterSections(texFile, pdfFile)
         }
 
         // slide the text that calls the footer content into the part of TeX where the end of the PDF page is
@@ -134,14 +137,14 @@ class FooterUtils {
             )
         }
 
-        private fun addFooterSections(outputStoryFilename: String) {
-            val texPath = Paths.get(outputStoryFilename)
+        private fun addFooterSections(texFile: File, pdfFile: File) {
+            val texPath = texFile.toPath()
             val lines = Files.readAllLines(texPath, StandardCharsets.UTF_8)
             var beginIndex =
                 lines.indexOf("% Begin Document") - 1  // so we can place this all before the document begins
             var totalLinesAdded = 0
 
-            for (pageNumber in 0 until PDFUtils.getNumberOfPDFPages() - 2) {
+            for (pageNumber in 0 until PDFUtils.getNumberOfPDFPages(pdfFile) - 2) {
                 val footerContents = makeFooterSection(pageNumber)
 
                 footerContents.forEach { footerPart ->

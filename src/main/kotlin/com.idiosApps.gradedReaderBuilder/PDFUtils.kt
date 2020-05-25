@@ -41,8 +41,7 @@ class PDFUtils {
             scanner.close()
         }
 
-        fun getNumberOfPDFPages(): Int {
-            val pdfFile = File(Filenames.outputPDFFilename)
+        fun getNumberOfPDFPages(pdfFile: File): Int {
             PDDocument.load(pdfFile).use { pdDocument ->
                 return pdDocument.numberOfPages
             }
@@ -52,7 +51,7 @@ class PDFUtils {
         fun getPdfPageInfo(vocab: MutableList<Vocab>, pdfFile: File) : MutableList<PageInfo> {
             // TODO use a method similar to fixPDFPageLastLine to fix 39->8217 immediately after reading in the PDF.
             val documentPDF: PDDocument = PDDocument.load(pdfFile)
-            val pdfNumberOfPages = getNumberOfPDFPages()
+            val pdfNumberOfPages = getNumberOfPDFPages(pdfFile)
 
             val pagesInfo: MutableList<PageInfo> = ArrayList()
 
