@@ -10,12 +10,20 @@
 <form method="POST" action="/build" enctype="multipart/form-data">
     <table>
         <tr>
+            <td><form:label path="file">Select a title file to upload</form:label></td>
+            <td><input type="file" name="titleFile" /></td>
+        </tr>
+        <tr>
             <td><form:label path="file">Select a story file to upload</form:label></td>
             <td><input type="file" name="storyFile" /></td>
         </tr>
         <tr>
             <td><form:label path="file">Select a vocab file to upload</form:label></td>
             <td><input type="file" name="vocabFile" /></td>
+        </tr>
+        <tr>
+            <td><form:label path="file">Select a names file to upload</form:label></td>
+            <td><input type="file" name="namesFile" /></td>
         </tr>
         <tr>
             <input type="radio" id="pdf" name="outputType" value="pdf">
