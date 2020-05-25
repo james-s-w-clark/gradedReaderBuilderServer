@@ -12,7 +12,7 @@ class OSUtils {
         const val UNDETECTED_OS: String = "undetected"
 
         const val WINDOWS_COMMAND_PREFIX = "cmd.exe /c"
-        val LINUX_SHELL_PREFIX = arrayListOf("bash", "-c")
+        val LINUX_SHELL_PREFIX = listOf("bash", "-c")
         val SPACE = " "
 
 
@@ -76,6 +76,15 @@ class OSUtils {
                 MACOS -> return "\n"
             }
             return "\n" // best guess for anything else
+        }
+
+        fun getOSXetexCommand(command: String): List<String> {
+            when (getOS()) {
+                LINUX -> { return listOf("bash", "-c", command) }
+                WINDOWS -> { return listOf(WINDOWS_COMMAND_PREFIX + SPACE, command) }
+                MACOS -> { return listOf("bash", "-c", command) } // needs checking
+                else -> { return listOf("bash", "-c", command) } // assume linux-like
+            }
         }
     }
 }

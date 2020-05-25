@@ -1,11 +1,7 @@
 package com.idiosApps.gradedReaderBuilder;
 
-import com.idiosApps.gradedReaderBuilder.OSUtils.Companion.LINUX
-import com.idiosApps.gradedReaderBuilder.OSUtils.Companion.LINUX_SHELL_PREFIX
-import com.idiosApps.gradedReaderBuilder.OSUtils.Companion.MACOS
 import com.idiosApps.gradedReaderBuilder.OSUtils.Companion.SPACE
-import com.idiosApps.gradedReaderBuilder.OSUtils.Companion.WINDOWS
-import com.idiosApps.gradedReaderBuilder.OSUtils.Companion.WINDOWS_COMMAND_PREFIX
+import com.idiosApps.gradedReaderBuilderServer.TemporaryFile
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
 import java.io.File
@@ -13,27 +9,15 @@ import java.util.*
 
 class PDFUtils {
     companion object {
-        fun xelatexToPDF() {
-            val XETEX_NONSTOP = "xelatex -interaction=nonstopmode"
-            val XETEX_OUTDIR = "-output-directory=./output"
-            val XETEX_INFILE = "output/outputStory.tex" // this .tex is the output of previous methods
-            val XETEX_COMMAND = XETEX_NONSTOP + SPACE + XETEX_OUTDIR + SPACE + XETEX_INFILE // same for all OS
+        fun xelatexToPDF(texFile: TemporaryFile, pdfFile: TemporaryFile) {
+            val XETEX_COMMAND = "xelatex -interaction=nonstopmode" + SPACE +
+                    "-output-directory=" + pdfFile.parentFile.absolutePath + SPACE +
+                    texFile.absolutePath // same for all OS
 
-            val operatingSystem = OSUtils.getOS()
-            lateinit var command: String
+            val pb = ProcessBuilder()
             try {
-                when {
-                    operatingSystem.contains(LINUX) -> {
-                        command = LINUX_SHELL_PREFIX.toString() + SPACE + XETEX_COMMAND // TODO fix when back on Ubuntu
-                    }
-                    operatingSystem.contains(WINDOWS) -> {
-                        command = WINDOWS_COMMAND_PREFIX + SPACE + XETEX_COMMAND
-                    }
-                    operatingSystem.contains(MACOS) -> { // maybe same as linux?
-                        command = LINUX_SHELL_PREFIX.toString() + SPACE + XETEX_COMMAND // TODO find the command for MacOS
-                    }
-                }
-                runProcess(command)
+                pb.command(OSUtils.getOSXetexCommand(XETEX_COMMAND))
+                pb.start()
             } catch (exception: Exception) {
                 throw exception
             }

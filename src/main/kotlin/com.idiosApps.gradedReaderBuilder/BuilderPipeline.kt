@@ -30,7 +30,7 @@ class BuilderPipeline(
             texWriter.append("\\end{document}")
         }
 
-        PDFUtils.xelatexToPDF()
+        PDFUtils.xelatexToPDF(texFile, pdfFile)
 
         var pagesInfo = PDFUtils.getPdfPageInfo(vocab, pdfFile) // store where each page's last line of text is
         TexUtils.putTexLineNumbers(pagesInfo)
@@ -44,6 +44,6 @@ class BuilderPipeline(
             languageUsed
         )
 
-        PDFUtils.xelatexToPDF()
+        PDFUtils.xelatexToPDF(texFile, pdfFile)
     }
 }
