@@ -3,7 +3,6 @@
 % many font support
 %\usepackage{fontspec}
 \usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
 
 % TODO --BEGIN-- dynamically insert this language block
 \usepackage{xeCJK}
