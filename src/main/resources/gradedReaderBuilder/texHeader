@@ -14,7 +14,7 @@
 \setCJKmainfont[Hangul]{Dotum}
 
 % Add the ability to write Chinese-pinyin with tones
-%\usepackage{xpinyin} % TODO load this for Chinese only
+\usepackage{xpinyin} % TODO load this for Chinese only
 % TODO --END-- dynamically insert this language block
 
 
