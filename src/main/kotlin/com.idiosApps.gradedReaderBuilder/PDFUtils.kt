@@ -18,7 +18,7 @@ class PDFUtils {
             val pb = ProcessBuilder()
             try {
                 pb.command(OSUtils.getOSXetexCommand(XETEX_COMMAND))
-                pb.start()
+                pb.start().waitFor()
             } catch (exception: Exception) {
                 throw exception
             }
