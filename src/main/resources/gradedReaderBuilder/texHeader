@@ -50,10 +50,6 @@
 % Add the ability to indented paragraphs
 \usepackage{indentfirst}
 
-% Add the ability to use subscripts
-\usepackage{fixltx2e}
-
-
 % Patch for disabling using real superior glyphs
 % for superscripts 1, 2, and 3.
 \newcommand*{\DeactivateSuperscript}[1]{%
