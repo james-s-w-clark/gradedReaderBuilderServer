@@ -14,13 +14,13 @@ class BuilderPipeline(
 )  {
 
 
-    fun buildGradedReader() {
+    fun buildGradedReader(texFile: TemporaryFile, pdfFile: TemporaryFile) {
         var languageUsed = "mandarin"
 
         val vocab = VocabUtils.splitIntoParts(vocabFile)
         val names = VocabUtils.splitIntoParts(namesFile)
 
-        PrintWriter(Filenames.outputTexFilename, "UTF-8").use { texWriter ->
+        PrintWriter(texFile, "UTF-8").use { texWriter ->
             TexUtils.copyToTex(texWriter, this.javaClass.getResource("/gradedReaderBuilder/texHeader").file)
             TexUtils.copyToTex(texWriter, titleFile)
             TexUtils.copyToTex(texWriter, storyFile)
@@ -32,7 +32,7 @@ class BuilderPipeline(
 
         PDFUtils.xelatexToPDF()
 
-        var pagesInfo = PDFUtils.getPdfPageInfo(vocab) // store where each page's last line of text is
+        var pagesInfo = PDFUtils.getPdfPageInfo(vocab, pdfFile) // store where each page's last line of text is
         TexUtils.putTexLineNumbers(pagesInfo)
 
         TeXStyling.addStyling(vocab, SUPERSCRIPT_STYLING)

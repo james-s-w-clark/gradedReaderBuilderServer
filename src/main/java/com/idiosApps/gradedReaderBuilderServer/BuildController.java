@@ -23,7 +23,10 @@ public class BuildController {
                     tempDirectory.getFileFromMultipart(storyUpload),
                     tempDirectory.getFileFromMultipart(vocabUpload),
                     tempDirectory.getFileFromMultipart(namesUpload));
-            pipeline.buildGradedReader();
+
+            TemporaryFile texFile = tempDirectory.getFile(".tex");
+            TemporaryFile pdfFile = tempDirectory.getFile(".pdf");
+            pipeline.buildGradedReader(texFile, pdfFile);
         }
 
         int one = 1;

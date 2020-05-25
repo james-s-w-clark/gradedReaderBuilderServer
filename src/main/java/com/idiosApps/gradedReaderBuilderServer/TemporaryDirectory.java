@@ -23,7 +23,11 @@ public class TemporaryDirectory implements Closeable {
     }
 
     public TemporaryFile getFile() throws IOException {
-        return new TemporaryFile((Files.createTempFile(directory, UUID.randomUUID().toString(), TMP_EXT)));
+        return getFile(TMP_EXT);
+    }
+
+    public TemporaryFile getFile(String ext) throws IOException {
+        return new TemporaryFile((Files.createTempFile(directory, UUID.randomUUID().toString(), ext)));
     }
 
     public TemporaryFile getFileFromMultipart(MultipartFile multipartFile) throws IOException {

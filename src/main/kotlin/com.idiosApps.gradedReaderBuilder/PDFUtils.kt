@@ -64,12 +64,8 @@ class PDFUtils {
         }
 
         // TODO split this into two functions: one for vocab pages, one for last sentences on pages.
-        fun getPdfPageInfo(
-            vocab: MutableList<Vocab>
-        ) : MutableList<PageInfo> {
+        fun getPdfPageInfo(vocab: MutableList<Vocab>, pdfFile: File) : MutableList<PageInfo> {
             // TODO use a method similar to fixPDFPageLastLine to fix 39->8217 immediately after reading in the PDF.
-            val pdfFilename = Filenames.outputPDFFilename
-            val pdfFile = File(pdfFilename)
             val documentPDF: PDDocument = PDDocument.load(pdfFile)
             val pdfNumberOfPages = getNumberOfPDFPages()
 
