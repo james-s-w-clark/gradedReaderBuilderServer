@@ -1,17 +1,16 @@
 \documentclass{report}
 
-% many font support
-%\usepackage{fontspec}
-\usepackage[T1]{fontenc}
-
 % TODO --BEGIN-- dynamically insert this language block
 \usepackage{xeCJK}
-\xeCJKDeclareSubCJKBlock{Kana}{"3040 -> "309F, "30A0 -> "30FF, "31F0 -> "31FF, "1B000 -> "1B0FF}
-\xeCJKDeclareSubCJKBlock{Hangul}{"1100 -> "11FF, "3130 -> "318F, "A960 -> "A97F, "AC00 -> "D7AF, "D7B0 -> "D7FF}
 
-\setCJKmainfont{SimSun}
-\setCJKmainfont[Kana]{MS Mincho}
-\setCJKmainfont[Hangul]{Dotum}
+% many font support
+\usepackage[T1]{fontenc}
+%\usepackage{fontspec}
+%\xeCJKDeclareSubCJKBlock{Kana}{"3040 -> "309F, "30A0 -> "30FF, "31F0 -> "31FF, "1B000 -> "1B0FF}
+%\xeCJKDeclareSubCJKBlock{Hangul}{"1100 -> "11FF, "3130 -> "318F, "A960 -> "A97F, "AC00 -> "D7AF, "D7B0 -> "D7FF}
+%\setCJKmainfont{SimSun}
+%\setCJKmainfont[Kana]{MS Mincho}
+%\setCJKmainfont[Hangul]{Dotum}
 
 % Add the ability to write Chinese-pinyin with tones
 \usepackage{xpinyin} % TODO load this for Chinese only
