@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:form="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p>Get your greeting <a href="/greeting">here.</a></p>
+
+<form method="POST" action="/build" enctype="multipart/form-data">
+    <table>
+        <tr>
+            <td><form:label path="file">Select a story file to upload</form:label></td>
+            <td><input type="file" name="storyFile" /></td>
+        </tr>
+        <tr>
+            <td><form:label path="file">Select a vocab file to upload</form:label></td>
+            <td><input type="file" name="vocabFile" /></td>
+        </tr>
+        <tr>
+            <input type="radio" id="pdf" name="outputType" value="pdf">
+            <label for="pdf">PDF</label><br>
+            <input type="radio" id="zip" name="outputType" value="zip">
+            <label for="zip">Zip (pdf, latex, etc.)</label><br>
+        </tr>
+        <tr>
+            <td>Build your graded reader!<input type="submit" value="Submit" /></td>
+        </tr>
+    </table>
+</form>
+
+</body>
+</html>
