@@ -5,13 +5,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 public class BuildController {
 
     @RequestMapping(value = "/build", method = RequestMethod.POST)
-    public void build(@RequestParam(name="outputType", required=true) String outputType,
+    public File build(@RequestParam(name="outputType", required=true) String outputType,
                       @RequestPart(name="titleFile", required=true) MultipartFile titleUpload,
                       @RequestPart(name="storyFile", required=true) MultipartFile storyUpload,
                       @RequestPart(name="vocabFile", required=true) MultipartFile vocabUpload,
@@ -27,8 +29,11 @@ public class BuildController {
             TemporaryFile texFile = tempDirectory.getFile(".tex");
             TemporaryFile pdfFile = tempDirectory.getFile(".pdf");
             pipeline.buildGradedReader(texFile, pdfFile);
-        }
 
-        int one = 1;
+            if ("pdf".equals(outputType))
+                return pdfFile;
+            TemporaryFile zip = tempDirectory.getFile(".zip");
+            return ZipUtils.zipFiles(zip, List.of(pdfFile, texFile));
+        }
     }
 }
