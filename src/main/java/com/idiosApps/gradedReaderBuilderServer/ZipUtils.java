@@ -8,7 +8,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class ZipUtils {
-    public static File zipFiles(File zip, List<File> files) throws IOException {
+    public static TemporaryFile zipFiles(TemporaryFile zip, List<File> files) throws IOException {
         ByteArrayOutputStream bo = new ByteArrayOutputStream();
         try (ZipOutputStream zipOut= new ZipOutputStream(bo)) {
             for (File file : files) {

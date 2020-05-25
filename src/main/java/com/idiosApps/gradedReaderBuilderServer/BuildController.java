@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 @Controller
@@ -33,22 +34,20 @@ public class BuildController {
             TemporaryFile pdfFile = tempDirectory.getFile(".pdf");
             pipeline.buildGradedReader(texFile, pdfFile);
 
-            TemporaryFile outFile;
-            String contentType;
-            if ("pdf".equals(outputType)) {
-                outFile = pdfFile;
-                contentType = "application/pdf";
-            }
-            else {
-                outFile = tempDirectory.getFile(".zip");
-                ZipUtils.zipFiles(outFile, List.of(pdfFile, texFile));
-                contentType = "application/zip";
-            }
-
+            TemporaryFile outFile = getOutputFile(outputType, pdfFile, texFile, tempDirectory);
             IOUtils.copy(new FileInputStream(outFile), response.getOutputStream());
             response.flushBuffer();
+
+            String contentType = Files.probeContentType(outFile.toPath());
             response.setContentType(contentType);
-            return;
         }
+    }
+
+    private TemporaryFile getOutputFile(String outputType, TemporaryFile pdfFile, TemporaryFile texFile, TemporaryDirectory tempDirectory) throws IOException {
+        if ("pdf".equals(outputType))
+            return pdfFile;
+
+        TemporaryFile outFile = tempDirectory.getFile(".zip");
+        return ZipUtils.zipFiles(outFile, List.of(pdfFile, texFile));
     }
 }
