@@ -1,6 +1,7 @@
 package com.idiosApps.gradedReaderBuilderServer;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,9 +12,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.nio.file.Path;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,21 +24,24 @@ public class BuildControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @Test
-    public void getBuild() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"chinese"})
+    void getBuild(String language) throws Exception {
         mvc.perform(MockMvcRequestBuilders.multipart("/build")
-                .file(getMockMultipartFile("titleFile"))
-                .file(getMockMultipartFile("storyFile"))
-                .file(getMockMultipartFile("vocabFile"))
-                .file(getMockMultipartFile("namesFile"))
+                .file(getMockMultipartFile(language, "storyFile"))
+                .file(getMockMultipartFile(language, "vocabFile"))
+//                .file(getMockMultipartFile(language, "namesFile"))
                 .queryParam("outputType", "pdf")
-                .accept(MediaType.MULTIPART_FORM_DATA))
+                .accept(MediaType.MULTIPART_FORM_DATA)
+                .param("title", "GRB test")
+                .param("author","idiosapps"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/pdf"));
     }
 
-    private MockMultipartFile getMockMultipartFile(String resourceName) throws IOException {
-        InputStream stream = this.getClass().getResourceAsStream("/gradedReaderBuilder/" + resourceName);
-        return new MockMultipartFile(resourceName, stream);
+    private MockMultipartFile getMockMultipartFile(String folder, String file) throws IOException {
+        Path resource = Path.of("/gradedReaderBuilder", folder, file);
+        InputStream stream = this.getClass().getResourceAsStream(resource.toString());
+        return new MockMultipartFile(file, stream);
     }
 }
