@@ -44,9 +44,6 @@ class BuilderPipeline(
         var pagesInfo = PDFUtils.getPdfPageInfo(vocab, pdfFile) // store where each page's last line of text is
         TexUtils.putTexLineNumbers(texFile, pagesInfo)
 
-        TeXStyling.addStyling(texFile, vocab, SUPERSCRIPT_STYLING)
-        TeXStyling.addStyling(texFile, names, UNDERLINE_STYLING)
-
         FooterUtils.addVocabFooters(
             texFile,
             pdfFile,
@@ -54,6 +51,9 @@ class BuilderPipeline(
             vocab,
             languageUsed
         )
+
+        TeXStyling.addStyling(texFile, vocab, SUPERSCRIPT_STYLING)
+        TeXStyling.addStyling(texFile, names, UNDERLINE_STYLING)
 
         PDFUtils.xelatexToPDF(texFile, pdfFile)
     }
