@@ -9,10 +9,10 @@
 
 <form method="POST" action="/build" enctype="multipart/form-data">
     <table>
-        <tr>
-            <td><form:label path="file">Select a title file to upload</form:label></td>
-            <td><input type="file" name="titleFile" /></td>
-        </tr>
+        <label for="title">First name:</label><br>
+        <input type="text" id="title" name="title"><br>
+        <label for="author">Last name:</label><br>
+        <input type="text" id="author" name="author"><br><br>
         <tr>
             <td><form:label path="file">Select a story file to upload</form:label></td>
             <td><input type="file" name="storyFile" /></td>

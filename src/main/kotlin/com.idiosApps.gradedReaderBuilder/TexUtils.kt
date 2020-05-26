@@ -2,6 +2,7 @@ package com.idiosApps.gradedReaderBuilder;
 
 import java.io.*
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 import java.util.*
 
 class TexUtils {
@@ -30,32 +31,22 @@ class TexUtils {
             scanner.close()
         }
 
-        fun copyToTex(outputStoryWriter: PrintWriter, inputFilename: String) {
-            copyToTex(outputStoryWriter, File(inputFilename))
+        fun copyToTex(outputStoryWriter: PrintWriter, text: String) {
+            writeLineToTex(outputStoryWriter, text)
         }
 
         fun copyToTex(outputStoryWriter: PrintWriter, inputFile: File) {
-            val scanner = Scanner(inputFile, "UTF-8")
-
-            while (scanner.hasNextLine()) {
-                val line: String = scanner.nextLine() // read all lines
-                if (line.contains("Chapter")) {   // add chapter markup if dealing with a chapter
-                    outputStoryWriter.println("\\clearpage")
-                    outputStoryWriter.println("{\\centering \\large")
-                    outputStoryWriter.println("{\\uline{" + line + "}}\\\\}")
-                } else {     // else (for now) assume we have ordinary text
-                    outputStoryWriter.println(line)
-                }
+            Files.readAllLines(inputFile.toPath()).forEach {
+                writeLineToTex(outputStoryWriter, it)
             }
-            scanner.close()
         }
 
-        // can't load resource as file, so we have to read from a stream of the resource
-        fun copyToTex(outputStoryWriter: PrintWriter, resourceStream: InputStream) {
-            val reader = InputStreamReader(resourceStream, StandardCharsets.UTF_8)
-            val bufferedReader = BufferedReader(reader)
-            val lines = bufferedReader.lines()
-            lines.forEach { line ->
+        private fun writeLineToTex(outputStoryWriter: PrintWriter, line: String) {
+            if (line.contains("Chapter")) {
+                outputStoryWriter.println("\\clearpage")
+                outputStoryWriter.println("{\\centering \\large")
+                outputStoryWriter.println("{\\uline{" + line + "}}\\\\}")
+            } else { // (for now) assume we have ordinary text
                 outputStoryWriter.println(line)
             }
         }

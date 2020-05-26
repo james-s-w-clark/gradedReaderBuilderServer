@@ -16,16 +16,18 @@ import java.util.List;
 public class BuildController {
 
     @RequestMapping(value = "/build", method = RequestMethod.POST)
-    public void build(@RequestParam(name="outputType", required=true) String outputType,
-                      @RequestPart(name="titleFile", required=true) MultipartFile titleUpload,
-                      @RequestPart(name="storyFile", required=true) MultipartFile storyUpload,
-                      @RequestPart(name="vocabFile", required=true) MultipartFile vocabUpload,
-                      @RequestPart(name="namesFile", required=true) MultipartFile namesUpload,
+    public void build(@RequestParam(name="outputType") String outputType,
+                      @RequestParam(name="title") String title,
+                      @RequestParam(name="author") String author,
+                      @RequestPart(name="storyFile") MultipartFile storyUpload,
+                      @RequestPart(name="vocabFile") MultipartFile vocabUpload,
+                      @RequestPart(name="namesFile", required = false) MultipartFile namesUpload,
                       HttpServletResponse response) throws IOException {
 
         try (TemporaryDirectory tempDirectory = new TemporaryDirectory()) {
             BuilderPipeline pipeline = new BuilderPipeline(
-                    tempDirectory.getFileFromMultipart(titleUpload),
+                    title,
+                    author,
                     tempDirectory.getFileFromMultipart(storyUpload),
                     tempDirectory.getFileFromMultipart(vocabUpload),
                     tempDirectory.getFileFromMultipart(namesUpload));
