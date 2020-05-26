@@ -19,16 +19,15 @@ class PDFUtils {
                     "-jobname=" + pdfFile.nameWithoutExtension + SPACE + // XeLaTeX adds .pdf
                     texFile.absolutePath // same for all OS
 
+            val osXetexCommand = OSUtils.getOSXetexCommand(XETEX_COMMAND)
+            LOGGER.info("Running process: " + osXetexCommand.joinToString(" "))
+
             val pb = ProcessBuilder()
-            try {
-                pb.command(OSUtils.getOSXetexCommand(XETEX_COMMAND))
-                val process = pb.start()
-                process.errorStream.bufferedReader().lines().forEach(LOGGER::info)
-                process.inputStream.bufferedReader().lines().forEach(LOGGER::info)
-                process.waitFor()
-            } catch (exception: Exception) {
-                throw exception
-            }
+            pb.command(osXetexCommand)
+            val process = pb.start()
+            process.errorStream.bufferedReader().lines().forEach(LOGGER::info)
+            process.inputStream.bufferedReader().lines().forEach(LOGGER::info)
+            process.waitFor()
         }
 
         fun runProcess(command: String) {
