@@ -25,7 +25,7 @@ public class BuildControllerTest {
     private MockMvc mvc;
 
     @ParameterizedTest
-    @ValueSource(strings = {"chinese"})
+    @ValueSource(strings = {"chinese", "japanese"})
     void getBuild(String language) throws Exception {
         mvc.perform(MockMvcRequestBuilders.multipart("/build")
                 .file(getMockMultipartFile(language, "storyFile"))
@@ -33,7 +33,7 @@ public class BuildControllerTest {
 //                .file(getMockMultipartFile(language, "namesFile"))
                 .queryParam("outputType", "pdf")
                 .accept(MediaType.MULTIPART_FORM_DATA)
-                .param("title", "GRB test")
+                .param("title", "Test for " + language)
                 .param("author","idiosapps"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/pdf"));
