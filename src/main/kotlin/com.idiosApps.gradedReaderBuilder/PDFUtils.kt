@@ -4,11 +4,15 @@ import com.idiosApps.gradedReaderBuilder.OSUtils.Companion.SPACE
 import com.idiosApps.gradedReaderBuilderServer.TemporaryFile
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.*
 
+
 class PDFUtils {
     companion object {
+        private val LOGGER = LoggerFactory.getLogger(PDFUtils::class.java)
+
         fun xelatexToPDF(texFile: TemporaryFile, pdfFile: TemporaryFile) {
             val XETEX_COMMAND = "xelatex -interaction=nonstopmode" + SPACE +
                     "-output-directory=" + pdfFile.parentFile.absolutePath + SPACE +
@@ -18,7 +22,10 @@ class PDFUtils {
             val pb = ProcessBuilder()
             try {
                 pb.command(OSUtils.getOSXetexCommand(XETEX_COMMAND))
-                pb.start().waitFor()
+                val process = pb.start()
+                process.errorStream.bufferedReader().lines().forEach(LOGGER::info)
+                process.inputStream.bufferedReader().lines().forEach(LOGGER::info)
+                process.waitFor()
             } catch (exception: Exception) {
                 throw exception
             }
