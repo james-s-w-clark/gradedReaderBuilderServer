@@ -3,13 +3,10 @@ package com.idiosApps.gradedReaderBuilder;
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
 
 class FooterUtils {
     companion object {
-        lateinit var pageInfo: PageInfo
-        private var pageFooter = ArrayList<Footers>()
+        data class Footers(var leftFooter: String, var rightFooter: String)
 
         fun addVocabFooters (
                 texFile: File,
@@ -23,26 +20,25 @@ class FooterUtils {
             var languageMarker = LanguageUtils.getMarker(languageUsed)
             val lines = Files.readAllLines(texFile.toPath(), StandardCharsets.UTF_8)
 
+            var pageFooters = ArrayList<Footers>()
             for (pageNumber in 0 until PDFUtils.getNumberOfPDFPages(pdfFile) - 2) {// -1 for title page, -1 for size
-                pageInfo = pagesInfo[pageNumber]
-                pageFooter.add(generatePageFooters(languageMarker, vocab, pageNumber))
+                var pageInfo: PageInfo = pagesInfo[pageNumber]
 
-                var lineToChange =
-                    lines[pageInfo.texLinesOfPDFPagesLastSentence!!]
+                pageFooters.add(generatePageFooters(languageMarker, vocab, pageNumber))
 
-                var stylingLength = getStylingLength(
-                    lineToChange
-                ) // styling shifted pdf-line's location in tex; accounts for this.
+                var lineToChange =  lines[pageInfo.texLinesOfPDFPagesLastSentence!!]
 
-                var footerCallText: String =
-                    " \\thispagestyle{f" + (pageNumber + 1) + "}" + "\\clearpage " // + 1 '.' title page
+                // styling shifted pdf-line's location in tex; accounts for this.
+                var stylingLength = getStylingLength(lineToChange, pageInfo)
+
+                var footerCallText = " \\thispagestyle{f${pageNumber+1}}\\clearpage " // + 1 '.' title page
 
                 var lineWithReference = addFooterCallToTexLine(lineToChange, pageInfo, stylingLength, footerCallText)
 
                 lines[pageInfo.texLinesOfPDFPagesLastSentence!!] = lineWithReference
             }
             Files.write(texFile.toPath(), lines, StandardCharsets.UTF_8)
-            addFooterSections(texFile, pdfFile)
+            addFooterSections(texFile, pdfFile, pageFooters)
         }
 
         // slide the text that calls the footer content into the part of TeX where the end of the PDF page is
@@ -63,7 +59,7 @@ class FooterUtils {
                     )
         }
 
-        private fun getStylingLength(lineToChange: String): Int {
+        private fun getStylingLength(lineToChange: String, pageInfo: PageInfo): Int {
             var stylingLength = 0
             var stylingRegex = """\\uline\{[a-zA-Z\d]+\}|\\text(super|sub)script\{[0-9]+\.[0-9]+\}"""
             var lineToChangeLocal = lineToChange
@@ -115,13 +111,13 @@ class FooterUtils {
         }
 
         // Page-specific footerStyles get called at the end of every page - make the contents here.
-        private fun makeFooterSection(pageNumber: Int): List<String> {
+        private fun makeFooterSection(pageNumber: Int, footers: ArrayList<Footers>): List<String> {
             val title = "% % Footer " + (pageNumber + 1) + " % %"
             val pageStyle = "\\fancypagestyle{f" + (pageNumber + 1) + "}{"
             val fancyhf = "\\fancyhf{}"
             val position = "\\cfoot{\\thepage}"
-            val leftFooter = "\\lfoot{" + pageFooter[pageNumber].leftFooter
-            val rightFooter = "\\rfoot{" + pageFooter[pageNumber].rightFooter
+            val leftFooter = "\\lfoot{" + footers[pageNumber].leftFooter
+            val rightFooter = "\\rfoot{" + footers[pageNumber].rightFooter
 
             var renewCommand = if (pageNumber == 0) "\\renewcommand{\\headrulewidth}{0pt}" else null
 
@@ -137,15 +133,16 @@ class FooterUtils {
             )
         }
 
-        private fun addFooterSections(texFile: File, pdfFile: File) {
+        private fun addFooterSections(texFile: File, pdfFile: File, pageFooters: ArrayList<Footers>) {
             val texPath = texFile.toPath()
             val lines = Files.readAllLines(texPath, StandardCharsets.UTF_8)
-            var beginIndex =
-                lines.indexOf("% Begin Document") - 1  // so we can place this all before the document begins
+
+            // so we can place this all before the document begins
+            var beginIndex = lines.indexOf("% Begin Document") - 1
             var totalLinesAdded = 0
 
             for (pageNumber in 0 until PDFUtils.getNumberOfPDFPages(pdfFile) - 2) {
-                val footerContents = makeFooterSection(pageNumber)
+                val footerContents = makeFooterSection(pageNumber, pageFooters)
 
                 footerContents.forEach { footerPart ->
                     lines.add(beginIndex + totalLinesAdded, footerPart)
@@ -155,6 +152,4 @@ class FooterUtils {
             Files.write(texPath, lines, StandardCharsets.UTF_8)
         }
     }
-
-    data class Footers(var leftFooter: String, var rightFooter: String)
 }
