@@ -1,5 +1,6 @@
 package com.idiosApps.gradedReaderBuilder;
 
+import com.github.pemistahl.lingua.api.Language
 import java.io.PrintWriter
 
 class SummaryPageUtils {
@@ -9,6 +10,7 @@ class SummaryPageUtils {
     companion object {
         const val endLine = "\\\\"
         fun writeVocabSection(
+            storyLanguage: Language,
             outputStoryWriter: PrintWriter,
             vocab: MutableList<Vocab>
         ) {
@@ -17,7 +19,7 @@ class SummaryPageUtils {
             outputStoryWriter.println("\\centerline{Vocabulary}")     // add page title
 
             vocab.forEachIndexed {index, vocabItem ->
-                var L2Extra = LanguageUtils.getMarkedL2Extra(vocabItem)
+                var L2Extra = LanguageUtils.getMarkedL2Extra(vocabItem, storyLanguage)
                 val vocabLine = "${index + 1}. ${vocabItem.L2Word} $L2Extra ${vocabItem.L1Word}$endLine"
                 outputStoryWriter.println(vocabLine)
             }

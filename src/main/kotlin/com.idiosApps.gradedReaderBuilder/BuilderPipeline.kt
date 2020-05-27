@@ -23,7 +23,7 @@ class BuilderPipeline(
     }
 
     fun buildGradedReader(texFile: TemporaryFile, pdfFile: TemporaryFile) {
-        var languageUsed = "mandarin"
+        var storyLanguage = LanguageUtils.detectLanguage(storyFile)
 
         val vocab = VocabUtils.splitIntoParts(vocabFile)
         val names = VocabUtils.splitIntoParts(namesFile)
@@ -34,7 +34,8 @@ class BuilderPipeline(
             TexUtils.copyToTex(texWriter, TEX_BEGIN)
             TexUtils.copyToTex(texWriter, storyFile)
 
-            SummaryPageUtils.writeVocabSection(texWriter, vocab) // TODO add summary / grammar / names pages too
+            // TODO add summary / grammar / names pages too
+            SummaryPageUtils.writeVocabSection(storyLanguage, texWriter, vocab)
 
             texWriter.append("\\end{document}")
         }
@@ -49,7 +50,7 @@ class BuilderPipeline(
             pdfFile,
             pagesInfo,
             vocab,
-            languageUsed
+            storyLanguage
         )
 
         TeXStyling.addStyling(texFile, vocab, SUPERSCRIPT_STYLING)

@@ -1,5 +1,6 @@
 package com.idiosApps.gradedReaderBuilder;
 
+import com.github.pemistahl.lingua.api.Language
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -13,18 +14,17 @@ class FooterUtils {
                 pdfFile: File,
                 pagesInfo: MutableList<PageInfo>,
                 vocab: MutableList<Vocab>,
-                languageUsed: String
+                storyLanguage: Language
         ) {
             VocabUtils.getOrderIndicies(vocab) // add vocab "order of appearance" index // todo auto-find correct order
 
-            var languageMarker = LanguageUtils.getMarker(languageUsed)
             val lines = Files.readAllLines(texFile.toPath(), StandardCharsets.UTF_8)
 
             var pageFooters = ArrayList<Footers>()
             for (pageNumber in 0 until PDFUtils.getNumberOfPDFPages(pdfFile) - 2) {// -1 for title page, -1 for size
                 var pageInfo: PageInfo = pagesInfo[pageNumber]
 
-                pageFooters.add(generatePageFooters(languageMarker, vocab, pageNumber))
+                pageFooters.add(generatePageFooters(storyLanguage, vocab, pageNumber))
 
                 var lineToChange =  lines[pageInfo.texLinesOfPDFPagesLastSentence!!]
 
@@ -74,7 +74,7 @@ class FooterUtils {
         }
 
         private fun generatePageFooters(
-            languageMarker: String,
+            storyLanguage: Language,
             vocab: MutableList<Vocab>,
             pageNumber: Int
         ): Footers {
@@ -92,7 +92,7 @@ class FooterUtils {
             var doLeftFooter = true
             pagesVocab.forEach { vocabItem ->
                 val vocabFooter = "${vocabItem.firstOccurencePage!! - 1}.${vocabItem.vocabOrderIndex!! + 1} " +
-                        "${vocabItem.L2Word} ${LanguageUtils.getMarkedL2Extra(vocabItem)} - " +
+                        "${vocabItem.L2Word} ${LanguageUtils.getMarkedL2Extra(vocabItem, storyLanguage)} - " +
                         "${vocabItem.L1Word}${SummaryPageUtils.endLine}"
                 when (doLeftFooter) {
                     true -> {
