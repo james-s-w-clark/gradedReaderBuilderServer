@@ -18,9 +18,9 @@ class SummaryPageUtils {
             outputStoryWriter.println("\\setlength{\\parindent}{0ex}") // remove indenting
             outputStoryWriter.println("\\centerline{Vocabulary}")     // add page title
 
-            vocab.forEachIndexed {index, vocabItem ->
-                var L2Extra = LanguageUtils.getMarkedL2Extra(vocabItem, storyLanguage)
-                val vocabLine = "${index + 1}. ${vocabItem.L2Word} $L2Extra ${vocabItem.L1Word}$endLine"
+            vocab.forEach {
+                var L2Extra = LanguageUtils.getMarkedL2Extra(it, storyLanguage)
+                val vocabLine = "${it.L2Word} $L2Extra ${it.L1Word}$endLine"
                 outputStoryWriter.println(vocabLine)
             }
         }
