@@ -13,7 +13,6 @@
 \setCJKmainfont[Hangul]{NotoSansCJK-Medium.ttc}
 
 % Add the ability to write Chinese-pinyin with tones
-\usepackage{xpinyin} % TODO load this for Chinese only
 % TODO --END-- dynamically insert this language block
 
 
