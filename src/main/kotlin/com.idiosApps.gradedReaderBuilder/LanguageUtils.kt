@@ -23,7 +23,7 @@ class LanguageUtils {
             return detectLanguage(text)
         }
 
-        fun getMarker(language: Language): String {
+        fun getStartMarker(language: Language): String {
             return when (language) {
                 Language.CHINESE -> "\\pinyin{"
                 Language.ARABIC -> "\\arabicfont{"
@@ -31,19 +31,16 @@ class LanguageUtils {
             }
         }
 
-        fun closeMarker(marker: String): String {
-            if (marker.isEmpty()) return ""
-            return "}"
-        }
-
+        // Try to get marking without latex if possible, e.g. Chinese tone -> unicode char
+        // This will reduce latex headers/dependencies (xpinyin) and give users cleaner .tex files
         fun getMarkedL2Extra(vocabItem: Vocab, language: Language): String{
-            return if (vocabItem.L2Extra == null || vocabItem.L2Extra.trim() == "")
-                ""
-            else {
-                val marker = getMarker(language)
-                val markerClose = closeMarker(marker)
-                return "(${marker + vocabItem.L2Extra + markerClose})"
-            }
+            if (vocabItem.L2Extra.isNullOrEmpty())
+                return ""
+
+            // TODO switch with (Language.CHINESE) "ChineseUtils"
+            val markerStart = getStartMarker(language)
+            val markerClose = if (markerStart.isEmpty()) "" else "}"
+            return "(${markerStart + vocabItem.L2Extra + markerClose})"
         }
     }
 }
