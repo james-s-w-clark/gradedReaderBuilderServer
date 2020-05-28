@@ -39,6 +39,7 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+	maxHeapSize = "2g"
 }
 compileKotlin {
 	kotlinOptions {
