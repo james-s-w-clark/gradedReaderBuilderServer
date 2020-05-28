@@ -16,7 +16,7 @@ class FooterUtils {
                 vocab: MutableList<Vocab>,
                 storyLanguage: Language
         ) {
-            VocabUtils.getOrderIndicies(vocab) // add vocab "order of appearance" index // todo auto-find correct order
+            VocabUtils.generateOrderIndicies(vocab)
 
             val lines = Files.readAllLines(texFile.toPath(), StandardCharsets.UTF_8)
 

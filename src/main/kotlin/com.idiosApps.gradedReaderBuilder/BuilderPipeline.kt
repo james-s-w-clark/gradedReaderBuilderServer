@@ -18,15 +18,14 @@ class BuilderPipeline(
                 "\\begin{document}\n" +
                 "\\maketitle\n" +
                 "\\clearpage"
-
-
     }
 
     fun buildGradedReader(texFile: TemporaryFile, pdfFile: TemporaryFile) {
         var storyLanguage = LanguageUtils.detectLanguage(storyFile)
 
-        val vocab = VocabUtils.splitIntoParts(vocabFile)
-        val names = VocabUtils.splitIntoParts(namesFile)
+        val unsortedVocab = VocabUtils.splitIntoParts(vocabFile)
+        val vocab = VocabUtils.getVocabOrderedByAppearance(storyFile, unsortedVocab)
+        val names = VocabUtils.splitIntoParts(namesFile) // names are like vocab, but formatted differently
 
         PrintWriter(texFile, "UTF-8").use { texWriter ->
             TexUtils.copyToTex(texWriter, File(this.javaClass.getResource("/gradedReaderBuilder/texHeader").path))
