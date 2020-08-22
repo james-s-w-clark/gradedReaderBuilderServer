@@ -11,6 +11,8 @@
 \setCJKmainfont{NotoSansCJK-Regular.ttc}
 \setCJKmainfont[Kana]{NotoSansCJK-Regular.ttc}
 \setCJKmainfont[Hangul]{NotoSansCJK-Medium.ttc}
+\usepackage{kotex} % so korean doesn't lose spaces
+
 
 % Add the ability to write Chinese-pinyin with tones
 % TODO --END-- dynamically insert this language block

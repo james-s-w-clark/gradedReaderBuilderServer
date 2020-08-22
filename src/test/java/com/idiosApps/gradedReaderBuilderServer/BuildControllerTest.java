@@ -25,7 +25,7 @@ public class BuildControllerTest {
     private MockMvc mvc;
 
     @ParameterizedTest
-    @ValueSource(strings = {"chinese", "japanese"})
+    @ValueSource(strings = {"korean"})
     void getBuild(String language) throws Exception {
         mvc.perform(MockMvcRequestBuilders.multipart("/build")
                 .file(getMockMultipartFile(language, "storyFile"))
